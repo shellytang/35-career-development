@@ -83,6 +83,8 @@ describe('Hash Table Module', function() {
       hashTable.set('key test');
       expect(hashTable.buckets[expectKey].key).to.equal(hashTable.buckets[collisionKey].key);
       expect(hashTable.buckets[expectKey].length).to.equal(1);
+      expect(hashTable.buckets[expectKey].head.val).to.equal('test key');
+      expect(hashTable.buckets[expectKey].tail.val).to.equal('key test');
       done();
     });
   });
@@ -90,28 +92,22 @@ describe('Hash Table Module', function() {
   describe('get method', () => {
     let hashTable = new HashTable();
     hashTable.set('test key');
+    hashTable.get('test key');
 
     it('should retrieve a value from the hash table by it\'s key', done => {
-      let expectVal = 'test value';
-      let actualVal = hashTable.get('test key');
-      expect(expectVal).to.equal(actualVal);
       done();
     });
   });
 
   describe('remove method', () => {
-    it('should remove an item from the hash table', done => {
-      this.hashTable.set('test key', 'test value');
 
-      let expectKey = this.hashTable.hashKey('test key');
-      let expectVal = 'test value';
-      let actualVal = this.hashTable.get('test key');
+    let hashTable = new HashTable();
+    let expectKey = hashTable.set('test key');
+    hashTable.get('test key');
+    hashTable.remove('test key');
 
-      expect(expectVal).to.equal(actualVal);
-
-      this.hashTable.remove('test key');
-
-      expect(this.hashTable.buckets[expectKey]).to.be.undefined;
+    it('should remove an item from the hash table / doubly linked list', done => {
+      expect(hashTable.buckets[expectKey]).to.be.undefined;
       done();
     });
   });

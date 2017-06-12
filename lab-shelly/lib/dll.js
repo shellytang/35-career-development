@@ -16,18 +16,6 @@ const DLL = module.exports = function() {
 // (TAIL)  <-[]<->[]<->[]-> (HEAD)
 // (prepend)                (append)
 
-// DLL.prototype.append = function(val) {
-//   if(!val) throw new Error('Please provide a value');
-//   if(!this.head) return this.head = this.tail = new Node(val);
-//
-//   this.head.next = new Node(val);
-//   this.head.next.prev = this.head;
-//   this.head = this.head.next;
-//   this.length++;
-//   return this.head;
-// };
-
-
 DLL.prototype.append = function(val) {
   if(!val) throw new Error('Please provide a value');
   if(!this.head) return this.head = this.tail = new Node(val);
@@ -89,7 +77,7 @@ DLL.prototype.find = function(key) {
   let current = this.head;
 
   while(current.next !== null) {
-    if(key === current.key) {
+    if(key === current.val) {
       return current;
     }
     current = current.next;
