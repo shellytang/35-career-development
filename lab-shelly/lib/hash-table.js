@@ -1,6 +1,6 @@
 'use strict';
 
-const DLL = require('./dlls');
+const DLL = require('./dll');
 
 const HashTable = module.exports = function(size=8192) {
   this.size = size;
@@ -14,28 +14,24 @@ HashTable.prototype.hashKey = function(key) {
   return hash;
 };
 
-HashTable.prototype.set = function(key, value) {
+HashTable.prototype.set = function(key) {
+  let hash = this.hashKey(key);
+  if(!this.buckets[hash]) this.buckets[hash] = new DLL();
+  if(this.buckets[hash]) this.buckets[hash].append(key);
 
-  if(this.buckets[this.hashKey(key)] === undefined) {
-    this.buckets[this.hashKey(key)] = new DLL().apppend(key, value);
-  } else {
-    this.buckets[this.hashKey(key)].append(key, value);
-  }
-  return this.buckets[this.hashKey(key)].tail;
-  //  this.buckets[this.hashKey(key)] = value;
+  return this.buckets[hash].tail;
 };
 
 HashTable.prototype.get = function(key) {
   if(!key) throw new Error('must provide key');
   if(this.buckets[this.hashKey(key)] === undefined) throw new Error('invalid key');
   return this.buckets[this.hashKey(key)].find(key);
-  // return this.buckets[this.hashKey(key)];
+
 };
 
 HashTable.prototype.remove = function(key) {
   if(!key) throw new Error('must provide key');
   if(this.buckets[this.hashKey(key)] === undefined) throw new Error('list is empty');
   this.buckets[this.hashKey(key)].remove(key);
-  // let address = this.hashKey(key);
-  // this.buckets[address] ? delete this.buckets[address] : new Error('invalid key');
+
 };

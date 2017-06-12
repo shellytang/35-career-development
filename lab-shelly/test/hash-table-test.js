@@ -1,20 +1,22 @@
 'use strict';
 
 const expect = require('chai').expect;
+const faker = require('faker');
 const HashTable = require('../lib/hash-table');
+const DLL = require('../lib/dll');
 
 describe('Hash Table Module', function() {
+  //
+  // beforeEach(done => {
+  //   let hashTable = new HashTable();
+  //   done();
+  // });
+  // afterEach(done => {
+  //   hashTable = null;
+  //   done();
+  // });
 
-  beforeEach(done => {
-    this.hashTable = new HashTable();
-    done();
-  });
-  afterEach(done => {
-    this.hashTable = null;
-    done();
-  });
-
-  describe.only('hash table constructor', () => {
+  describe('hash table constructor', () => {
     let hashTable = new HashTable();
     it('should instantiate a new empty hash table', done => {
       expect(hashTable).to.be.instanceOf(Object, HashTable);
@@ -34,37 +36,69 @@ describe('Hash Table Module', function() {
 
   describe('hashKey method', () => {
 
-    // it('should hash a key', done => {
-    //   let expectHash = this.hashTable.hashKey('testing');
-    //   // let actualHash =
-    //   expect(expectHash).to.equal(actualHash);
-    //   done();
-    // });
-    // it('should always hash a key to less than 8192', done => {
-    //   this.fakeKeys.forEach(key => {
-    //     expect(this.hashTable.hashKey(key)).to.be.lessThan(8192);
-    //   });
-    //   done();
-    // });
-  });
-  describe('set method', () => {
-    it('should add a new value to the hash table', done => {
-      let expectKey = this.hashTable.hashKey('test key');
-      this.hashTable.set('test key', 'test value');
-      expect(this.hashTable.buckets[expectKey]).to.equal('test value');
+    let hashTable = new HashTable();
+
+    it('should hash a key', done => {
+      let expectHash = hashTable.hashKey('testing');
+      let actualHash = 766;
+      expect(expectHash).to.equal(actualHash);
+      done();
+    });
+
+    it('should always hash a key to less than 8192', done => {
+      this.fakeKeys = [...Array(100)].map(() => faker.hacker.phrase());
+      this.fakeKeys.forEach(key => {
+        expect(hashTable.hashKey(key)).to.be.lessThan(8192);
+      });
+      delete this.fakeKeys;
       done();
     });
   });
-  describe('get method', () => {
-    it('should retrieve a value from the hash table by it\'s key', done => {
-      this.hashTable.set('test key', 'test value');
-      let expectVal = 'test value';
-      let actualVal = this.hashTable.get('test key');
 
+
+  describe('set method', () => {
+
+    let hashTable = new HashTable();
+    let expectKey = hashTable.hashKey('test key');
+    hashTable.set('test key');
+
+    it('should create a doubly linked list if bucket index is undefined', done => {
+      expect(hashTable.buckets[expectKey]).to.be.instanceOf(Object, DLL);
+      done();
+    });
+
+    it('should create the doubly linked list in the correct bucket index', done => {
+      expect(hashTable.buckets[expectKey]).to.not.equal(undefined);
+      done();
+    });
+
+    it('should add a new value to the doubly linked list', done => {
+      expect(hashTable.buckets[expectKey].tail.val).to.equal('test key');
+      expect(hashTable.buckets[expectKey].length).to.equal(0);
+      done();
+    });
+
+    it('should handle key collisions', done => {
+      let collisionKey = hashTable.hashKey('key test');
+      hashTable.set('key test');
+      expect(hashTable.buckets[expectKey].key).to.equal(hashTable.buckets[collisionKey].key);
+      expect(hashTable.buckets[expectKey].length).to.equal(1);
+      done();
+    });
+  });
+
+  describe('get method', () => {
+    let hashTable = new HashTable();
+    hashTable.set('test key');
+
+    it('should retrieve a value from the hash table by it\'s key', done => {
+      let expectVal = 'test value';
+      let actualVal = hashTable.get('test key');
       expect(expectVal).to.equal(actualVal);
       done();
     });
   });
+
   describe('remove method', () => {
     it('should remove an item from the hash table', done => {
       this.hashTable.set('test key', 'test value');
