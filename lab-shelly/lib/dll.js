@@ -47,21 +47,21 @@ DLL.prototype.remove = function(key) {
   if(!this.tail) throw new Error('the list is empty');
   let current = this.head;
 
+  if(this.head.val === key) {
+    this.head = this.head.next;
+    return;
+  }
+
   while(current.prev !== null) {
 
-    if(this.head === key) {
-      this.head = this.head.next;
-      return;
-    }
-
-    if(current.prev === key) {
+    if(current.prev.val === key) {
       current.prev = current.prev.prev;
       current.prev.next = current;
       this.length--;
       return;
     }
 
-    if(current.prev === key && current.prev.prev === null) {
+    if(current.prev.val === key && current.prev.prev === null) {
       this.current.previous = null;
       this.current.previous.next = null;
       this.tail = this.current;
@@ -74,14 +74,14 @@ DLL.prototype.remove = function(key) {
 };
 
 DLL.prototype.find = function(key) {
-  let current = this.head;
 
+  let current = this.head;
+  if(key === current.val) return current.val;
   while(current.next !== null) {
     if(key === current.val) {
-      return current;
+      return current.val;
     }
     current = current.next;
   }
-
   return null;
 };
