@@ -6,15 +6,6 @@ const HashTable = require('../lib/hash-table');
 const DLL = require('../lib/dll');
 
 describe('Hash Table Module', function() {
-  //
-  // beforeEach(done => {
-  //   let hashTable = new HashTable();
-  //   done();
-  // });
-  // afterEach(done => {
-  //   hashTable = null;
-  //   done();
-  // });
 
   describe('hash table constructor', () => {
     let hashTable = new HashTable();
@@ -32,7 +23,6 @@ describe('Hash Table Module', function() {
       done();
     });
   }); //
-
 
   describe('hashKey method', () => {
 
@@ -90,17 +80,33 @@ describe('Hash Table Module', function() {
   });
 
   describe('get method', () => {
+
     let hashTable = new HashTable();
     hashTable.set('test key');
-    hashTable.get('test key');
+    let result = hashTable.get('test key');
 
     it('should retrieve a value from the hash table by it\'s key', done => {
+      expect(result).to.equal('test key');
       done();
     });
+
+    it('should return an error if no matching hashKey', done => {
+      let err = 'invalid key';
+      expect(function()
+        { hashTable.get('not here');
+      }).to.throw(err);
+      done();
+    });
+
+    it('should return null if no matching node value', done => {
+      let badKey = hashTable.get('key test');
+      expect(badKey).to.equal(null);
+      done();
+    });
+
   });
 
   describe('remove method', () => {
-
     let hashTable = new HashTable();
     let expectKey = hashTable.set('test key');
     hashTable.get('test key');

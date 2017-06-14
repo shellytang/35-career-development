@@ -24,14 +24,15 @@ HashTable.prototype.set = function(key) {
 
 HashTable.prototype.get = function(key) {
   if(!key) throw new Error('must provide key');
-  if(this.buckets[this.hashKey(key)] === undefined) throw new Error('invalid key');
-  return this.buckets[this.hashKey(key)].find(key);
-
+  let hash = this.hashKey(key);
+  if(this.buckets[hash] === undefined) throw new Error('invalid key');
+  return this.buckets[hash].find(key);
 };
 
 HashTable.prototype.remove = function(key) {
   if(!key) throw new Error('must provide key');
-  if(this.buckets[this.hashKey(key)] === undefined) throw new Error('list is empty');
-  this.buckets[this.hashKey(key)].remove(key);
+  let hash = this.hashKey(key);
+  if(this.buckets[hash] === undefined) throw new Error('list is empty');
+  this.buckets[hash].remove(key);
 
 };
